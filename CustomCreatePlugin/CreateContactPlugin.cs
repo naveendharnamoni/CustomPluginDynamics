@@ -41,12 +41,11 @@ namespace CustomCreatePlugin
 
                 try
                 {
-                    var retreievedEntity = service.Retrieve("account", entity.Id, new ColumnSet(true));
                     // Plug-in business logic goes here.
                     Entity contact = new Entity("contact");
                     contact["firstname"] = "Test";
-                    contact["lastname"] = "creation 1";
-                    contact["description"] = retreievedEntity.ToString();
+                    contact["lastname"] = "creation";
+                    //contact["description"] = retreievedEntity.ToString();
                     contact["parentcustomerid"] = new EntityReference("account", entity.Id); 
                     service.Create(contact);
                 }
