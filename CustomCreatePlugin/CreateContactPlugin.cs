@@ -46,8 +46,39 @@ namespace CustomCreatePlugin
                     contact["firstname"] = "Test";
                     contact["lastname"] = "creation";
                     //contact["description"] = retreievedEntity.ToString();
-                    contact["parentcustomerid"] = new EntityReference("account", entity.Id); 
+                    contact["parentcustomerid"] = new EntityReference("account", entity.Id);
                     service.Create(contact);
+
+                    contact = service.Retrieve(contact.LogicalName, contact.Id, new ColumnSet(true));
+                    Entity contactToUpdate = new Entity("contact");
+                    contactToUpdate["contactid"] = contact.Id;
+                    contactToUpdate["mobilephone"] = "1234567890";
+                    service.Update(contactToUpdate);
+
+                    var query = new QueryExpression
+                    {
+                        EntityName = "contact",
+                        ColumnSet = new ColumnSet(true),
+                        Criteria = new FilterExpression
+                        {
+                            Conditions =
+                            {
+                                new ConditionExpression
+                                {
+                                    AttributeName = "firstname",
+                                    Operator = ConditionOperator.Equal,
+                                    Values =
+                                    {
+                                        "Test"
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    DataCollection<Entity> contacts = service.RetrieveMultiple(query).Entities;
+                    var retrievedContact1 = contacts.FirstOrDefault();
+                    service.Delete(retrievedContact1.LogicalName, retrievedContact1.Id);
                 }
 
                 //catch (FaultException<OrganizationServiceFault> ex)
